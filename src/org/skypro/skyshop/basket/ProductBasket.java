@@ -26,7 +26,7 @@ public class ProductBasket {
         int totalCost = 0;
         for (Product product : basket) {
             if (Objects.nonNull(product)) {
-                totalCost += product.getProductPrice();
+                totalCost += product.getPrice();
             }
         }
         return totalCost;
@@ -36,17 +36,22 @@ public class ProductBasket {
         if (basket.length == 0) {
             System.out.println("В корзине пусто!");
         }
+        int specialCounter = 0;
         for (Product product : basket) {
             if (Objects.nonNull(product)) {
-                System.out.println(product.getProductName() + ": " + product.getProductPrice());
+                if (product.isSpecial()) {
+                    specialCounter++;
+                }
+                System.out.println(product);
             }
         }
         System.out.println("Итого: " + totalCost());
+        System.out.println("Специальных товаров: " + specialCounter);
     }
 
     public boolean isIn(String productName) {
         for (Product product : basket) {
-            if (Objects.nonNull(product) && product.getProductName().equalsIgnoreCase(productName)) {
+            if (Objects.nonNull(product) && product.getName().equalsIgnoreCase(productName)) {
                 return true;
             }
         }
