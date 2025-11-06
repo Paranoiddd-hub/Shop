@@ -1,18 +1,21 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.SimpleProduct;
 
 import java.util.Arrays;
 
 public class App {
     public static void main(String[] args) {
-        Product chiken = new Product("Chicken", 500);
-        Product butter = new Product("Butter", 200);
-        Product bread = new Product("Bread", 50);
-        Product eggs = new Product("Eggs", 100);
-        Product buckwheat = new Product("Buckwheat", 100);
-        Product milk = new Product("Milk", 80);
+        Product chiken = new SimpleProduct("Chicken", 500);
+        Product butter = new SimpleProduct("Butter", 200);
+        Product bread = new FixPriceProduct("Bread");
+        Product eggs = new DiscountedProduct("Eggs", 100, 10);
+        Product buckwheat = new DiscountedProduct("Buckwheat", 100, 20);
+        Product milk = new SimpleProduct("Milk", 80);
 
         ProductBasket basket = new ProductBasket();
         // 1. Добавление продукта в корзину.
