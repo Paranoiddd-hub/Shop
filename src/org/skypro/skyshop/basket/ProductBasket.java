@@ -49,7 +49,7 @@ public class ProductBasket {
         System.out.println("Специальных товаров: " + specialCounter);
     }
 
-    public boolean isIn(String productName) {
+    public boolean contain(String productName) {
         for (Product product : basket) {
             if (Objects.nonNull(product) && product.getName().equalsIgnoreCase(productName)) {
                 return true;
