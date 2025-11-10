@@ -6,6 +6,12 @@ public class DiscountedProduct extends Product {
 
     public DiscountedProduct(String name, int price, int discountPercent) {
         super(name);
+        if (price < 0) {
+            throw new IllegalArgumentException("Введено неправильное название продукта!");
+        }
+        if (discountPercent < 0 || 100 < discountPercent) {
+            throw new IllegalArgumentException("Введен неправильный процент скидки!");
+        }
         this.basePrice = price;
         this.discountPercent = discountPercent;
     }

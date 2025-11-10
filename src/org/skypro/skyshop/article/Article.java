@@ -17,8 +17,8 @@ public final class Article implements Searchable {
     }
 
     @Override
-    public String searchTerm() {
-        return toString();
+    public String getSearchTerm() {
+        return title + text;
     }
 
     @Override
