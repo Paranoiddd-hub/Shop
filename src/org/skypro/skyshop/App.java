@@ -16,7 +16,7 @@ public class App {
         Product bread = new FixPriceProduct("Хлеб");
         Product eggs = new DiscountedProduct("Яйца", 100, 10);
         Product buckwheat = new DiscountedProduct("Гречка", 100, 20);
-        Product milk = new SimpleProduct("Молоко", 80);
+        Product milk = new SimpleProduct("Milk", 80);
 
         ProductBasket basket = new ProductBasket();
         // 1. Добавление продукта в корзину.
@@ -69,7 +69,35 @@ public class App {
         searchEngine.add(article1);
         searchEngine.add(article2);
 
-        //System.out.println(Arrays.toString(searchEngine.getSearchBase()));
+        System.out.println(Arrays.toString(searchEngine.getSearchBase()));
         System.out.println(Arrays.toString(searchEngine.search("хлеб")));
+        System.out.println();
+
+        // Домашка Исключения в Java.
+        System.out.println("         Исключения в Java");
+        try {
+            Product testProduct1 = new SimpleProduct(" ", 30);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            Product testProduct2 = new SimpleProduct("testProduct2", -30);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            Product testProduct3 = new DiscountedProduct("testProduct3", 20, -2);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        System.out.println();
+
+        System.out.println("Наиболее подходящий элемент поиска");
+        try {
+            System.out.println(searchEngine.searchMostSuitable("Курица").toString());
+            System.out.println(searchEngine.searchMostSuitable("Сахар").toString());
+        } catch (BestResultNotFound e) {
+            System.out.println(e);
+        }
     }
 }
