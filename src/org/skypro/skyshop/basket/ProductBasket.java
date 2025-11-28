@@ -3,26 +3,32 @@ package org.skypro.skyshop.basket;
 import org.skypro.skyshop.product.Product;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ProductBasket {
-    private List<Product> basket = new ArrayList<>();
+    private Map<String, List<Product>> basket = new HashMap<>();
 
-    public List<Product> getBasket() {
+    public Map<String, List<Product>> getBasket() {
         return basket;
     }
 
     public void addProduct(Product product) {
-        basket.add(product);
+        basket.computeIfAbsent(product.getName().toLowerCase(), key -> new ArrayList<>()).add(product);
+        if (basket.containsKey(product.getName())) {
+            basket.get(product.getName().toLowerCase()).add(product);
+        }
     }
 
     public int totalCost() {
         int totalCost = 0;
-        for (Product product : basket) {
-            if (Objects.nonNull(product)) {
-                totalCost += product.getPrice();
+        for (List<Product> list : basket.values()) {
+            for (Product product : list) {
+                if (Objects.nonNull(product)) {
+                    totalCost += product.getPrice();
+                }
             }
         }
         return totalCost;
@@ -33,12 +39,14 @@ public class ProductBasket {
             System.out.println("В корзине пусто!");
         }
         int specialCounter = 0;
-        for (Product product : basket) {
-            if (Objects.nonNull(product)) {
-                if (product.isSpecial()) {
-                    specialCounter++;
+        for (List<Product> list : basket.values()) {
+            for (Product product : list) {
+                if (Objects.nonNull(product)) {
+                    if (product.isSpecial()) {
+                        specialCounter++;
+                    }
+                    System.out.println(product);
                 }
-                System.out.println(product);
             }
         }
         System.out.println("Итого: " + totalCost());
@@ -46,27 +54,18 @@ public class ProductBasket {
     }
 
     public boolean contain(String productName) {
-        for (Product product : basket) {
-            if (Objects.nonNull(product) && product.getName().equalsIgnoreCase(productName)) {
-                return true;
-            }
-        }
-        return false;
+        return basket.containsKey(productName.toLowerCase());
     }
 
     public void clear() {
         basket.clear();
     }
 
-    public List<Product> deleteProduct(String name) {
-        Iterator<Product> iterator = basket.iterator();
-        ArrayList<Product> results = new ArrayList<>();
-        while (iterator.hasNext()) {
-            Product element = iterator.next();
-            if (element.getName().equalsIgnoreCase(name)) {
-                results.add(element);
-                iterator.remove();
-            }
+    public List<Product> deleteProduct(String productName) {
+        List<Product> results = new ArrayList<>();
+        if (basket.containsKey(productName.toLowerCase())) {
+            results = basket.get(productName.toLowerCase());
+            basket.remove(productName.toLowerCase());
         }
         return results;
     }
