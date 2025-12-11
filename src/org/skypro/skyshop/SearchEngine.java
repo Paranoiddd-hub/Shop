@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class SearchEngine {
     private Set<Searchable> searchBase = new HashSet<>();
@@ -15,13 +16,10 @@ public class SearchEngine {
     }
 
     public Set<Searchable> search(String searchWord) {
-        Set<Searchable> results = new TreeSet<>(new ReverseLengthComparator());
-        for (Searchable s : searchBase) {
-            if (Objects.nonNull(s) && s.getSearchTerm().toLowerCase().contains(searchWord.toLowerCase())) {
-                results.add(s);
-            }
-        }
-        return results;
+        return searchBase.stream()
+                .filter(s -> Objects.nonNull(s))
+                .filter(s -> s.getSearchTerm().toLowerCase().contains(searchWord.toLowerCase()))
+                .collect(Collectors.toCollection(() -> new TreeSet<>(new ReverseLengthComparator())));
     }
 
     public static class ReverseLengthComparator implements Comparator<Searchable> {
