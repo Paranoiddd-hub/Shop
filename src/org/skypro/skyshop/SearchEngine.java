@@ -1,26 +1,37 @@
 package org.skypro.skyshop;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Objects;
-import java.util.TreeMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class SearchEngine {
-    private List<Searchable> searchBase = new ArrayList<>();
+    private Set<Searchable> searchBase = new HashSet<>();
 
-    public List<Searchable> getSearchBase() {
+    public Set<Searchable> getSearchBase() {
         return searchBase;
     }
 
-    public Map<String, Searchable> search(String searchWord) {
-        Map<String, Searchable> results = new TreeMap<>();
+    public Set<Searchable> search(String searchWord) {
+        Set<Searchable> results = new TreeSet<>(new ReverseLengthComparator());
         for (Searchable s : searchBase) {
             if (Objects.nonNull(s) && s.getSearchTerm().toLowerCase().contains(searchWord.toLowerCase())) {
-                results.put(s.getSearchableName(), s);
+                results.add(s);
             }
         }
         return results;
+    }
+
+    public static class ReverseLengthComparator implements Comparator<Searchable> {
+        @Override
+        public int compare(Searchable s1, Searchable s2) {
+            if (s1.getSearchableName().length() == s2.getSearchableName().length()) {
+                return s1.getSearchableName().compareTo(s2.getSearchableName());
+            }
+            return s2.getSearchableName().length() - s1.getSearchableName().length();
+        }
     }
 
     public void add(Searchable searchable) {
