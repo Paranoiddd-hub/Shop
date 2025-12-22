@@ -3,6 +3,7 @@ package org.skypro.skyshop.basket;
 import org.skypro.skyshop.product.Product;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,40 +18,34 @@ public class ProductBasket {
 
     public void addProduct(Product product) {
         basket.computeIfAbsent(product.getName().toLowerCase(), key -> new ArrayList<>()).add(product);
-        if (basket.containsKey(product.getName())) {
-            basket.get(product.getName().toLowerCase()).add(product);
-        }
+        basket.get(product.getName().toLowerCase()).add(product);
     }
 
     public int totalCost() {
-        int totalCost = 0;
-        for (List<Product> list : basket.values()) {
-            for (Product product : list) {
-                if (Objects.nonNull(product)) {
-                    totalCost += product.getPrice();
-                }
-            }
-        }
-        return totalCost;
+        return basket.values().stream()
+                .flatMap(Collection::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
     public void printInfo() {
         if (basket.size() == 0) {
             System.out.println("В корзине пусто!");
         }
-        int specialCounter = 0;
-        for (List<Product> list : basket.values()) {
-            for (Product product : list) {
-                if (Objects.nonNull(product)) {
-                    if (product.isSpecial()) {
-                        specialCounter++;
-                    }
-                    System.out.println(product);
-                }
-            }
-        }
+        basket.values().stream()
+                .flatMap(Collection::stream)
+                .forEach(System.out::println);
+
         System.out.println("Итого: " + totalCost());
-        System.out.println("Специальных товаров: " + specialCounter);
+        System.out.println("Специальных товаров: " + getSpecialCount());
+    }
+
+    public long getSpecialCount() {
+        return basket.values().stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .filter(Product::isSpecial)
+                .count();
     }
 
     public boolean contain(String productName) {
@@ -62,11 +57,6 @@ public class ProductBasket {
     }
 
     public List<Product> deleteProduct(String productName) {
-        List<Product> results = new ArrayList<>();
-        if (basket.containsKey(productName.toLowerCase())) {
-            results = basket.get(productName.toLowerCase());
-            basket.remove(productName.toLowerCase());
-        }
-        return results;
+        return basket.remove(productName.toLowerCase());
     }
 }
